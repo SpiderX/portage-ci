@@ -5,8 +5,15 @@
 language: python
 python:
     - pypy
+addons:
+  apt:
+    sources:
+    - debian-sid
+    packages:
+    - shellcheck
 env:
     - PORTAGE_VER="2.3.24"
+    - SHELLCHECK_OPTS="--shell=bash --exclude=SC2034,SC2016,SC2191"
 before_install:
     - sudo apt-get -qq update
     - pip install lxml
@@ -30,4 +37,4 @@ before_script:
     - cd travis-overlay
 script:
     - ./../spinner.sh "python ../portage-portage-${PORTAGE_VER}/repoman/bin/repoman full -d"
-# You can append own scripts after this line
+    - shellcheck $(find . -maxdepth 3 -type f -name "*.ebuild" -o -name "*.initd")
